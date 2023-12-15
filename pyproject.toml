@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xdiff"
+description = "TODO."
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["xarray", "bitwise diff"]
+license = {file = "LICENSE.md"}
+maintainers = [
+  {name = "Timothy Hodson", email = "thodson@usgs.gov"},
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "xarray",
+]
+dynamic = ["version"]
+
+[tool.setuptools]
+packages = ["xdiff"]
+
+[project.optional-dependencies]
+test = [
+  "pytest > 5.0.0",
+  "pytest-cov[all]"
+]
+
+[project.urls]
+homepage = "https://github.com/thodson-usgs/xdiff"
+
+[tool.setuptools_scm]
+write_to = "xdiff/_version.py"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+skip-string-normalization = true
