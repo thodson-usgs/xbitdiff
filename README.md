@@ -3,8 +3,8 @@
 WARNING: This package does not work yet.
 
 We store lot of redundant information, and in the era of big data, those costs add up.
-`xbitdiff` is a simple wrapper around xarray for creating data diffs that can help reduce storage costs.
-The name `xbitdiff` is an homage to `xbitinfo` but packages are not directly related.
+`xbitdiff` is a simple wrapper around `xarray` for creating data diffs that can help reduce storage costs.
+The name `xbitdiff` is an homage to `xbitinfo` but the packages are not directly related.
 
 Here's a typical scenario:
 You host several large datasets.
