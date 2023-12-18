@@ -15,15 +15,15 @@ if TYPE_CHECKING:
 class DiffAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
-        self._obj.attrs['xbitdiff'] = {'source_filename': None}
+        self._obj.attrs['xbitdiff_source'] = None
 
     @property
     def source(self) -> str:
-        return self._obj.attrs['xbitdiff']['source_filename']
+        return self._obj.attrs['xbitdiff_source']
 
     @source.setter
     def source(self, filename: str) -> None:
-        self._obj.attrs['xbitdiff']['source_filename'] = filename
+        self._obj.attrs['xbitdiff_source'] = filename
 
     def patch(self, diff: xr.Dataset) -> xr.Dataset:
         """Patch an array using a diff array.
@@ -58,7 +58,7 @@ class DiffAccessor:
             The diff dataset.
         """
         output = source - self._obj
-        output.source = self.source
+        output.bitdiff.source = source.bitdiff.source
         return output
 
 

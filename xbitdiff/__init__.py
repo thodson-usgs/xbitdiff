@@ -1,8 +1,8 @@
 from importlib.metadata import PackageNotFoundError, version
 
-from xdiff.accessor import *
+from xbitdiff.accessor import *
 
 try:
-    __version__ = version('xdiff')
+    __version__ = version('xbitdiff')
 except PackageNotFoundError:
     __version__ = 'version-unknown'
