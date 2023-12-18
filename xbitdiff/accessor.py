@@ -15,7 +15,15 @@ if TYPE_CHECKING:
 class DiffAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
-        self._source_file = None
+        self._obj.attrs['xbitdiff'] = {'source_filename': None}
+
+    @property
+    def source(self) -> str:
+        return self._obj.attrs['xbitdiff']['source_filename']
+
+    @source.setter
+    def source(self, filename: str) -> None:
+        self._obj.attrs['xbitdiff']['source_filename'] = filename
 
     def patch(self, diff: xr.Dataset) -> xr.Dataset:
         """Patch an array using a diff array.
@@ -30,8 +38,7 @@ class DiffAccessor:
         """
 
         output = self._obj + diff
-        # TODO: if no source file, warn
-        output._source_file = diff._source_file
+        # TODO warn if the datasets do not have the same source
         return output
 
     def diff(self, source: Dataset) -> Dataset:
@@ -51,7 +58,7 @@ class DiffAccessor:
             The diff dataset.
         """
         output = source - self._obj
-        output._source_file = self._source_file
+        output.source = self.source
         return output
 
 
@@ -90,11 +97,12 @@ def open_dataset(
         output = source_ds.xdiff.patch(diff_ds)
 
     # check whether key exists properly
-    elif diff_ds._source_file:
-        source_ds = xr.open_dataset(diff_ds._source_file, **kwargs)
+    elif diff_ds.source:
+        source_ds = xr.open_dataset(diff_ds.source, **kwargs)
         output = source_ds.xdiff.patch(diff_ds)
 
     else:
+        # TODO
         source_filename = filename_or_obj
         output = diff_ds
 
