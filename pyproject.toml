@@ -3,7 +3,7 @@ requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "xdiff"
+name = "xbitdiff"
 description = "TODO."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -33,7 +33,7 @@ test = [
 homepage = "https://github.com/thodson-usgs/xdiff"
 
 [tool.setuptools_scm]
-write_to = "xdiff/_version.py"
+write_to = "xbitdiff/_version.py"
 
 [tool.isort]
 profile = "black"

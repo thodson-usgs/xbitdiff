@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 # TODO these are methods, so patch and diff only
-@xr.register_dataset_accessor("xdiff")
+@xr.register_dataset_accessor("bitdiff")
 class DiffAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
@@ -56,8 +56,7 @@ class DiffAccessor:
 
 
 def open_dataset(
-    filename_or_obj: str | os.PathLike[Any] | BufferedIOBase,
-    AbstractDataStore,
+    filename_or_obj: str | os.PathLike[Any] | BufferedIOBase | AbstractDataStore,
     source_filename: str = None,
     **kwargs,
 ) -> Dataset:
