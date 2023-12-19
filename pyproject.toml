@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "xbitdiff"
-description = "TODO."
+description = "A simple xarray extension for differential compression"
 readme = "README.md"
 requires-python = ">=3.8"
 keywords = ["xarray", "bitwise diff"]
