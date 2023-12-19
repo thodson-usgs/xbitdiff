@@ -21,7 +21,7 @@ dependencies = [
 dynamic = ["version"]
 
 [tool.setuptools]
-packages = ["xdiff"]
+packages = ["xbitdiff"]
 
 [project.optional-dependencies]
 test = [
@@ -30,7 +30,7 @@ test = [
 ]
 
 [project.urls]
-homepage = "https://github.com/thodson-usgs/xdiff"
+homepage = "https://github.com/thodson-usgs/xbitdiff"
 
 [tool.setuptools_scm]
 write_to = "xbitdiff/_version.py"

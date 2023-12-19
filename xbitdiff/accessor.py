@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import pickle
 from typing import TYPE_CHECKING, Any
+
 import xarray as xr
 from xarray import Dataset
 from xarray.backends.common import AbstractDataStore
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
     from io import BufferedIOBase
 
 
-@xr.register_dataset_accessor("bitdiff")
+@xr.register_dataset_accessor('bitdiff')
 class DiffAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
@@ -30,8 +31,8 @@ class DiffAccessor:
     def patch(self, diff: Dataset) -> Dataset:
         """Patch an array using a diff array.
 
-        Patch adds the diff array to the original array, which is equivalent to a bitwise OR
-        (|) operation.
+        Patch adds the diff array to the original array, which is equivalent to
+        a bitwise OR (|) operation.
 
         Returns
         -------
@@ -61,9 +62,9 @@ class DiffAccessor:
         """
         if source.bitdiff.source is None:
             raise AttributeError(
-                "The source dataset does not specifiy its source filename. "
-                "Open the dataset with xbitdiff.open_dataset() or set the "
-                "source mannually with dataset.bitdiff.source = 'filename'."
+                'The source dataset does not specifiy its source filename. '
+                'Open the dataset with xbitdiff.open_dataset() or set the '
+                'source mannually with dataset.bitdiff.source = filename.'
             )
 
         output = source - self._obj
