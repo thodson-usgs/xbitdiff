@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import pickle
 from typing import TYPE_CHECKING, Any
 import xarray as xr
 from xarray import Dataset
@@ -10,22 +11,23 @@ if TYPE_CHECKING:
     from io import BufferedIOBase
 
 
-# TODO these are methods, so patch and diff only
 @xr.register_dataset_accessor("bitdiff")
 class DiffAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
-        self._obj.attrs['xbitdiff_source'] = None
+        self.source = None
 
     @property
-    def source(self) -> str:
-        return self._obj.attrs['xbitdiff_source']
+    def source(self) -> object:
+        """Return the source of the diff dataset."""
+        return pickle.loads(bytes(self._obj.attrs['xbitdiff_source']))
 
     @source.setter
-    def source(self, filename: str) -> None:
-        self._obj.attrs['xbitdiff_source'] = filename
+    def source(self, filename_or_obj: str) -> None:
+        """Convert source to a list() that can be stored as a netcdf attribute."""
+        self._obj.attrs['xbitdiff_source'] = list(pickle.dumps(filename_or_obj))
 
-    def patch(self, diff: xr.Dataset) -> xr.Dataset:
+    def patch(self, diff: Dataset) -> Dataset:
         """Patch an array using a diff array.
 
         Patch adds the diff array to the original array, which is equivalent to a bitwise OR
@@ -57,6 +59,13 @@ class DiffAccessor:
         dataset : Dataset
             The diff dataset.
         """
+        if source.bitdiff.source is None:
+            raise AttributeError(
+                "The source dataset does not specifiy its source filename. "
+                "Open the dataset with xbitdiff.open_dataset() or set the "
+                "source mannually with dataset.bitdiff.source = 'filename'."
+            )
+
         output = source - self._obj
         output.bitdiff.source = source.bitdiff.source
         return output
@@ -64,7 +73,7 @@ class DiffAccessor:
 
 def open_dataset(
     filename_or_obj: str | os.PathLike[Any] | BufferedIOBase | AbstractDataStore,
-    source_filename: str = None,
+    source_filename: str | os.PathLike[Any] | BufferedIOBase | AbstractDataStore = None,
     **kwargs,
 ) -> Dataset:
     """Open a dataset from a file.
@@ -78,7 +87,7 @@ def open_dataset(
     scipy.io.netcdf (only netCDF3 supported). Byte-strings or file-like
     objects are opened by scipy.io.netcdf (netCDF3) or h5py (netCDF4/HDF).
 
-    source_filename : str
+    source_filename : str, Path, file-like or DataStore
         Path to the source dataset.
 
     **kwards : dict
@@ -94,16 +103,16 @@ def open_dataset(
 
     if source_filename:
         source_ds = xr.open_dataset(source_filename, **kwargs)
-        output = source_ds.xdiff.patch(diff_ds)
+        source_ds.bitdiff.source = source_filename
+        output = source_ds.bitdiff.patch(diff_ds)
 
-    # check whether key exists properly
-    elif diff_ds.source:
+    elif diff_ds.bitdiff.source:
         source_ds = xr.open_dataset(diff_ds.source, **kwargs)
-        output = source_ds.xdiff.patch(diff_ds)
+        source_ds.bitdiff.source = diff_ds.bitdiff.source
+        output = source_ds.bitdiff.patch(diff_ds)
 
     else:
-        # TODO
-        source_filename = filename_or_obj
         output = diff_ds
+        output.bitdiff.source = filename_or_obj
 
     return output
