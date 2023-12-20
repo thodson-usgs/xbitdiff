@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+import json
 import os
-import pickle
 from typing import TYPE_CHECKING, Any
 
 import xarray as xr
@@ -21,12 +21,12 @@ class DiffAccessor:
     @property
     def source(self) -> object:
         """Return the source of the diff dataset."""
-        return pickle.loads(bytes(self._obj.attrs['xbitdiff_source']))
+        return json.loads(self._obj.attrs['xbitdiff_source'])
 
     @source.setter
     def source(self, filename_or_obj: str) -> None:
         """Convert source to a list() that can be stored as a netcdf attribute."""
-        self._obj.attrs['xbitdiff_source'] = list(pickle.dumps(filename_or_obj))
+        self._obj.attrs['xbitdiff_source'] = json.dumps(filename_or_obj)
 
     def patch(self, diff: Dataset) -> Dataset:
         """Patch an array using a diff array.
